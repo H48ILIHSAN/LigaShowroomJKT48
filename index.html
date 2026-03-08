@@ -500,6 +500,10 @@
 			            window.update(window.ref(window.db, 'latest_competition'), mainData);
 		            } else {
                         const offlineData = await getFallbackFromDB();
+						let onliveRes = await Promise.allSettled([fetchSafe(onliveAPI)]);
+						let liveData = onliveRes[0].status === 'fulfilled' ? onliveRes[0].value : null;
+						if (liveData && liveData.rooms) updateData.live_rooms = liveData.rooms.map(r => Number(r.room_id));
+						
                         if (offlineData && !mainData) updateData(offlineData);
                     }
                 } catch (e) {
@@ -597,6 +601,7 @@
 </body>
 
 </html>
+
 
 
 
