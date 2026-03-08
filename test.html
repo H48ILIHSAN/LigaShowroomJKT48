@@ -337,7 +337,7 @@
                 // 1. Fungsi Helper untuk Fetch dengan fitur Retry
 const fetchWithRetry = async (url, retries = 3) => {
     try {
-        const res = await fetch(url,{headers:{cookie:"_ga=GA1.1.385508882.1772448597; _sid=c36a29ca-c3ca-474e-b469-5dbba6d6b3c9; _ga_C92JVM8CR4=GS2.1.s1772927143$o12$g1$t1772927196$j7$l0$h0"}});
+        const res = await fetch(url,{headers:{"x-api-key":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3NzI4MjAzODQsImV4cCI6MTc3MjkwNjc4NH0.O0lmpKD4z-Sgl712hmPL5VI6SnR0r5vYbqnN8uq_s9A"}});
         if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
         
         const json = await res.json();
@@ -356,7 +356,7 @@ const fetchWithRetry = async (url, retries = 3) => {
 // 2. Eksekusi Utama
 const urls = [
     `${corsAPI}${encodeURIComponent(mainAPI)}`,
-    `${corsAPI}${encodeURIComponent(fullAPI)}`,
+    fullAPI,
     `${corsAPI}${encodeURIComponent(onliveAPI)}`
 ];
 
@@ -367,6 +367,8 @@ const results = await Promise.allSettled(urls.map(url => fetchWithRetry(url)));
 const cData = results[0].status === 'fulfilled' ? results[0].value : null;
 const dData = results[1].status === 'fulfilled' ? results[1].value : null;
 const lData = results[2].status === 'fulfilled' ? results[2].value : null;
+
+console.log(cData, dData, lData);
 
 const liveRooms = (lData?.rooms || []).map(r => Number(r.room_id));
 const summary = dData.summary;
@@ -406,7 +408,7 @@ const fetchWithRetry = async (url, retries = 3) => {
 // 2. Eksekusi Utama
 const urls = [
     `${corsAPI}${encodeURIComponent(mainAPI)}`,
-    `${corsAPI}${encodeURIComponent(fullAPI)}`,
+    fullAPI,
     `${corsAPI}${encodeURIComponent(onliveAPI)}`
 ];
 
@@ -417,6 +419,8 @@ const results = await Promise.allSettled(urls.map(url => fetchWithRetry(url)));
 const cData = results[0].status === 'fulfilled' ? results[0].value : null;
 const dData = results[1].status === 'fulfilled' ? results[1].value : null;
 const lData = results[2].status === 'fulfilled' ? results[2].value : null;
+
+console.log(cData, dData, lData);
 
 const liveRooms = (lData?.rooms || []).map(r => Number(r.room_id));
 const summary = dData.summary;
