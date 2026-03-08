@@ -211,6 +211,19 @@
             <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1580562505317506"
                 data-ad-slot="8799817572" data-ad-format="auto" data-full-width-responsive="true"></ins>
             <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+            <div class="hidden">
+                <script async="async" data-cfasync="false"
+                    src="https://bendspecimen.com/5e5ca51a75a707eac16a34fa00ba27b7/invoke.js"></script>
+                <div id="container-5e5ca51a75a707eac16a34fa00ba27b7" class="md:gap-2"></div>
+                <script>atOptions = { 'key': '24cef143b85165562793c6e7d20afa6c', 'format': 'iframe', 'height': 90, 'width': 720, 'params': {} };</script>
+                <script src="https://bendspecimen.com/24cef143b85165562793c6e7d20afa6c/invoke.js"></script>
+                <script>atOptions = { 'key': '24cef143b85165562793c6e7d20afa6c', 'format': 'iframe', 'height': 90, 'width': 720, 'params': {} };</script>
+                <script src="https://bendspecimen.com/24cef143b85165562793c6e7d20afa6c/invoke.js"></script>
+                <script>atOptions = { 'key': '24cef143b85165562793c6e7d20afa6c', 'format': 'iframe', 'height': 90, 'width': 720, 'params': {} };</script>
+                <script src="https://bendspecimen.com/24cef143b85165562793c6e7d20afa6c/invoke.js"></script>
+                <script>atOptions = { 'key': '24cef143b85165562793c6e7d20afa6c', 'format': 'iframe', 'height': 90, 'width': 720, 'params': {} };</script>
+                <script src="https://bendspecimen.com/24cef143b85165562793c6e7d20afa6c/invoke.js"></script>
+            </div>
             <script>(function () { const t = document.getElementById("ad-wrapper"), e = (e, n) => { document.querySelectorAll(".container-5e5ca51a75a707eac16a34fa00ba27b7__bn").forEach(t => { t.classList.add("rounded-2xl", "w-100", "overflow-hidden", "mx-2", "shadow-sm", "hover:scale-[1.02]", "border-2", "border-slate-300", "transition-transform", "duration-300") }) }, n = new MutationObserver(e); t && n.observe(t, { childList: !0, subtree: !0 }) })()</script>
         </div>
         <footer class="mt-12 mb-6 flex flex-col items-center gap-4 text-center">
@@ -246,6 +259,55 @@
             document.documentElement.classList.add('dark')
         }
         updateThemeUI();
+
+        // CONTIRBUTOR LOGIC
+        const contributorsCache = {};
+
+        const fetchContributors = async (roomId, targetId) => {
+            const container = document.getElementById(targetId);
+            if (!container || contributorsCache[roomId]) return;
+
+            container.innerHTML = `<div class="col-span-full py-4 flex justify-center"><i class="ph-bold ph-arrows-clockwise animate-spin text-primary"></i></div>`;
+
+            const url = `https://jkt48sr.webplayer.my.id/api/events/41907/ranking/${roomId}/contributors`;
+            const res = await fetch(`${corsAPI}${encodeURIComponent(url)}`);
+            if (!res.ok) throw new Error();
+            const json = await res.json();
+            const data = json.contents ? JSON.parse(json.contents) : null;
+
+            if (data && data.ranking) {
+                contributorsCache[roomId] = data.ranking.slice(0, 3);
+                renderContributorsUI(roomId, targetId);
+            } else {
+                container.innerHTML = `<p class="col-span-full text-center text-slate-500 italic py-2">Tidak ada data kontributor</p>`;
+            }
+        };
+
+        const renderContributorsUI = (roomId, targetId) => {
+            const container = document.getElementById(targetId);
+            const contributors = contributorsCache[roomId];
+            if (!container || !contributors) return;
+
+            container.innerHTML = contributors.map((c, idx) => `
+                <div class="flex items-center gap-3 bg-white/5 p-2 rounded-lg border border-white/5">
+                    <div class="relative">
+                        <img src="${c.avatar_url}" class="size-8 rounded-full border border-slate-600"/>
+                        <span class="absolute -top-1 -left-1 size-4 flex items-center justify-center rounded-full text-[10px] font-black text-white ${idx === 0 ? 'bg-yellow-500' : idx === 1 ? 'bg-slate-400' : 'bg-orange-500'}">${idx + 1}</span>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <p class="font-bold truncate text-slate-200">${c.name}</p>
+                        <p class="text-[10px] text-primary font-black uppercase">${formatNumber(c.point)} Pt</p>
+                    </div>
+                </div>
+            `).join('');
+        };
+
+        const toggleAccordion = (el, roomId) => {
+            const isOpen = el.classList.toggle('accordion-open');
+            if (isOpen) {
+                fetchContributors(roomId, `contrib-${roomId}`);
+            }
+        };
 
         const renderHeaderAndSummary = (event, summary) => {
             if (!event || !summary) return;
@@ -358,8 +420,9 @@
                     gap_above = above.point - entry.point;
                     gap_below = entry.point - below.point;
                 }
+                const roomId = entry.room.room_id;
                 return `
-                <div class="card-base bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden shadow-sm hover:scale-[1.01] transition-transform duration-300 cursor-pointer" onclick="this.classList.toggle('accordion-open')">
+                <div class="card-base bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden shadow-sm hover:scale-[1.01] transition-transform duration-300 cursor-pointer" onclick="toggleAccordion(this, ${roomId})">
                     <div class="p-4 flex flex-row items-center gap-4">
                         <div class="flex items-center gap-4 flex-1">
                             <a href="https://www.showroom-live.com/r/${entry.room.name.split('/')[0]}" class="flex flex-row gap-3 min-w-0" onclick="event.stopPropagation()">
@@ -388,8 +451,8 @@
                         </div>
                     </div>
                     <div class="accordion-content px-4">
-                        
-                        <div class="grid grid-cols-3 md:grid-cols-5 gap-3 dark:bg-slate-900/50 bg-slate-300/50 p-4 rounded-xl text-xs">
+                        <!-- STATS -->
+                        <div class="grid grid-cols-3 md:grid-cols-5 gap-3 dark:bg-slate-900/50 bg-slate-300/50 p-4 rounded-xl text-xs mb-3">
                             <div class="flex flex-col">
                                 <span class="text-slate-500 font-bold text-xs">Jumlah Live</span>
                                 <span class="font-black text-slate-900 dark:text-white">${entry.live?.live_count || 0}x Live</span>
@@ -411,6 +474,17 @@
                                 <span class="font-black text-yellow-500">${formatGift(entry.live?.total_gift || 0)}</span>
                             </div>
                         </div>
+                        
+                        <!-- CONTRIBUTORS -->
+                        <div class="mb-3">
+                            <p class="text-[10px] font-black uppercase text-slate-500 mb-2 flex items-center gap-1">
+                                <i class="ph-bold ph-crown"></i> Top 3 Kontributor
+                            </p>
+                            <div id="contrib-${roomId}" class="grid grid-cols-1 md:grid-cols-3 gap-2">
+                                <!-- Data will be loaded here -->
+                            </div>
+                        </div>
+
                         <p class="text-xs text-slate-500 italic mb-2 text-right">Live Terakhir: ${entry.live?.last_live_at ? dayjs(entry.live.last_live_at).fromNow() : 'N/A'}</p>
                     </div>
                 </div>`
