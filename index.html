@@ -128,7 +128,7 @@
     const onliveAPI=atob("aHR0cHM6Ly93d3cuc2hvd3Jvb20tbGl2ZS5jb20vYXBpL2V2ZW50L2prdDQ4X2phcGFudHZjb21wZXRpdGlvbi9vbmxpdmVfcm9vbXM=");
     const corsAPI="https://api.allorigins.win/get?url=";
     
-    let eventStartTime=0,eventEndTime=0,liveRooms=[];
+    let eventStartTime=0,eventEndTime=0,liveRooms=[],gap_above=0,gap_below=0;
     const formatNumber=(num)=>num?Number(num).toLocaleString('id-ID'):'0';
     const formatGift=(num)=>`${formatNumber(num)} Gold`;
     const formatDuration=(ms)=>{const d=dayjs.duration(ms||0);
@@ -228,7 +228,7 @@
                 const isLive=liveRooms.includes(Number(entry.room.room_id));
                 return `
                 <div class="${bgClass} ${order} card-base bg-slate-100 dark:bg-slate-800 p-6 flex md:flex-col items-center text-center shadow-lg rounded-2xl overflow-hidden hover:scale-[1.02] transition-transform duration-300">
-                    <a href="https://www.showroom-live.com/r/${entry.room.key}" class="w-full relative flex gap-2 md:block">
+                    <a href="https://www.showroom-live.com/r/${entry.room.name.split('/')[0]}" class="w-full relative flex gap-2 md:block">
                         <div class="mb-4 w-[50%] md:w-full relative">
                             <img src="${entry.room.image}" class="relative w-full md:h-auto mx-auto rounded-2xl border-2 ${borderClass}"/>
                             <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-white font-black text-xs bg-gradient-to-r ${medalClass}">#${entry.rank}</div>
@@ -251,12 +251,20 @@
         const renderRankings=(ranking)=>{
             if(!ranking || !ranking.length) return;
             const container=document.getElementById('rankings-container');
-            container.innerHTML=ranking.map(entry=>{const isLive=liveRooms.includes(Number(entry.room.room_id));
+            const sortedRanking = [...ranking].sort((a,b) => a.rank - b.rank);
+            container.innerHTML=ranking.map(entry=>{
+                const isLive=liveRooms.includes(Number(entry.room.room_id));
+                const above = sortedRanking.find(r => r.rank === entry.rank - 1);
+                const below = sortedRanking.find(r => r.rank === entry.rank + 1);
+                if(above && below) {
+                    gap_above = above.point - entry.point;
+                    gap_below = entry.point - below.point;
+                }
                 return `
                 <div class="card-base bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden shadow-sm hover:scale-[1.01] transition-transform duration-300 cursor-pointer" onclick="this.classList.toggle('accordion-open')">
                     <div class="p-4 flex flex-row items-center gap-4">
                         <div class="flex items-center gap-4 flex-1">
-                            <a href="https://www.showroom-live.com/r/${entry.room.key}" class="flex flex-row gap-3 min-w-0" onclick="event.stopPropagation()">
+                            <a href="https://www.showroom-live.com/r/${entry.room.name.split('/')[0]}" class="flex flex-row gap-3 min-w-0" onclick="event.stopPropagation()">
                                 <span class="font-black text-slate-400 text-lg w-8 shrink-0">#${entry.rank}</span>
                                 <div class="size-12 rounded-xl overflow-hidden border border-slate-700 shrink-0 shadow-md">
                                     <img src="${entry.room.image_square}" class="w-full h-full object-cover"/>
@@ -275,8 +283,8 @@
                                 <p class="text-xs font-bold text-slate-500 uppercase tracking-tighter">Poin</p>
                             </div>
                             <div>
-                            ${entry.gap_above ? `<span class="text-xs font-bold text-red-500 flex items-center"><i class="ph-bold ph-arrow-up"></i>${formatNumber(entry.gap_above)}</span>` : ''}
-                            ${entry.gap_below ? `<span class="text-xs font-bold text-emerald-500 flex items-center"><i class="ph-bold ph-arrow-down"></i>${formatNumber(entry.gap_below)}</span>` : ''}
+                            ${entry.gap_above || gap_above? `<span class="text-xs font-bold text-red-500 flex items-center"><i class="ph-bold ph-arrow-up"></i>${formatNumber(entry.gap_above||gap_above)}</span>` : ''}
+                            ${entry.gap_below || gap_below? `<span class="text-xs font-bold text-emerald-500 flex items-center"><i class="ph-bold ph-arrow-down"></i>${formatNumber(entry.gap_below||gap_below)}</span>` : ''}
                             </div>
                             <i class="ph-bold ph-caret-down text-slate-500 rotate-icon transition-transform"></i>
                         </div>
