@@ -309,7 +309,7 @@
             }, 1000)
         };
 
-        const renderTopThree = (ranking) => {
+        const renderTopThree = (ranking, rangkingRoom) => {
             if (!ranking || !ranking.length) return;
             const container = document.getElementById('top-three-container');
             const podium = [ranking[1], ranking[0], ranking[2]].filter(Boolean);
@@ -352,19 +352,20 @@
             }).join('')
         };
 
-        const renderRankings = (ranking) => {
+        const renderRankings = (ranking, rankingRoom) => {
             if (!ranking || !ranking.length) return;
             const container = document.getElementById('rankings-container');
             const sortedRanking = [...ranking].sort((a, b) => a.rank - b.rank);
             container.innerHTML = ranking.map(entry => {
+                const roomId = entry.room.room_id;
+                const roomStats = rankingRoom.find(r => Number(r.room.room_id) === Number(roomId))?.live;
                 const isLive = liveRooms.includes(Number(entry.room.room_id));
                 const above = sortedRanking.find(r => r.rank === entry.rank - 1);
                 const below = sortedRanking.find(r => r.rank === entry.rank + 1);
                 if (above && below) {
-                    gap_above = above.point - entry.point;
-                    gap_below = entry.point - below.point;
+                    entry.gap_above = above.point - entry.point;
+                    entry.gap_below = entry.point - below.point;
                 }
-                const roomId = entry.room.room_id;
                 return `
                 <div class="card-base bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden shadow-sm hover:scale-[1.01] transition-transform duration-300 cursor-pointer" onclick="toggleAccordion(this, ${roomId})">
                     <div class="p-4 flex flex-row items-center gap-4">
@@ -388,8 +389,8 @@
                                 <p class="text-xs font-bold text-slate-500 uppercase tracking-tighter">Poin</p>
                             </div>
                             <div>
-                            ${entry.gap_above || gap_above ? `<span class="text-xs font-bold text-red-500 flex items-center"><i class="ph-bold ph-arrow-up"></i>${formatNumber(entry.gap_above || gap_above)}</span>` : ''}
-                            ${entry.gap_below || gap_below ? `<span class="text-xs font-bold text-emerald-500 flex items-center"><i class="ph-bold ph-arrow-down"></i>${formatNumber(entry.gap_below || gap_below)}</span>` : ''}
+                            ${entry.gap_above ? `<span class="text-xs font-bold text-red-500 flex items-center"><i class="ph-bold ph-arrow-up"></i>${formatNumber(entry.gap_above)}</span>` : ''}
+                            ${entry.gap_below ? `<span class="text-xs font-bold text-emerald-500 flex items-center"><i class="ph-bold ph-arrow-down"></i>${formatNumber(entry.gap_below)}</span>` : ''}
                             </div>
                             <i class="ph-bold ph-caret-down text-slate-500 rotate-icon transition-transform"></i>
                         </div>
@@ -399,23 +400,23 @@
                         <div class="grid grid-cols-3 md:grid-cols-5 gap-3 dark:bg-slate-900/50 bg-slate-300/50 p-4 rounded-xl text-xs mb-3">
                             <div class="flex flex-col">
                                 <span class="text-slate-500 font-bold text-xs">Jumlah Live</span>
-                                <span class="font-black text-slate-900 dark:text-white">${entry.live?.live_count || 0}x Live</span>
+                                <span class="font-black text-slate-900 dark:text-white">${roomStats.live_count || 0}x Live</span>
                             </div>
                             <div class="flex flex-col">
                                 <span class="text-slate-500 font-bold text-xs">Total Durasi</span>
-                                <span class="font-black text-slate-900 dark:text-white">${formatDuration(entry.live?.total_duration)}</span>
+                                <span class="font-black text-slate-900 dark:text-white">${formatDuration(roomStats.total_duration)}</span>
                             </div>
                             <div class="flex flex-col">
                                 <span class="text-slate-500 font-bold text-xs">Viewer Terbanyak</span>
-                                <span class="font-black text-slate-900 dark:text-white">${formatNumber(entry.live?.avg_viewer_peak || 0)} Viewers</span>
+                                <span class="font-black text-slate-900 dark:text-white">${formatNumber(roomStats.avg_viewer_peak || 0)} Viewers</span>
                             </div>
                             <div class="flex flex-col">
                                 <span class="text-slate-500 font-bold text-xs">Total Komentar</span>
-                                <span class="font-black text-slate-900 dark:text-white">${formatNumber(entry.live?.total_comments || 0)} Komen</span>
+                                <span class="font-black text-slate-900 dark:text-white">${formatNumber(roomStats.total_comments || 0)} Komen</span>
                             </div>
                             <div class="flex flex-col">
                                 <span class="text-slate-500 font-bold text-xs">Total Gold</span>
-                                <span class="font-black text-yellow-500">${formatGift(entry.live?.total_gift || 0)}</span>
+                                <span class="font-black text-yellow-500">${formatGift(roomStats.total_gift || 0)}</span>
                             </div>
                         </div>
                         
@@ -429,7 +430,7 @@
                             </div>
                         </div>
 
-                        <p class="text-xs text-slate-500 italic mb-2 text-right">Live Terakhir: ${entry.live?.last_live_at ? dayjs(entry.live.last_live_at).fromNow() : 'N/A'}</p>
+                        <p class="text-xs text-slate-500 italic mb-2 text-right">Live Terakhir: ${roomStats.last_live_at ? dayjs(roomStats.last_live_at).fromNow() : 'belum pernah'}</p>
                     </div>
                 </div>`
             })
@@ -440,10 +441,11 @@
             if (!data) return;
             if (data.live_rooms) liveRooms = data.live_rooms;
             if (data.event && data.summary) renderHeaderAndSummary(data.event, data.summary);
-            const rankingList = data.ranking && data.rankings;
+            const rankingList = data.ranking;
+            const rankingRoom = data.rankings;
             if (rankingList) {
                 renderTopThree(rankingList);
-                renderRankings(rankingList);
+                renderRankings(rankingList, rankingRoom);
             }
             const updateTime = data.date ? dayjs(data.date) : dayjs();
             document.getElementById('update-text').innerText = `Update: ${updateTime.format('dddd, HH:mm')} WIB`
@@ -472,12 +474,10 @@
                 return null;
             };
 
-            try {
-                let results = await Promise.allSettled([fetchSafe(fullAPI)]);
-                let fullData = results[0].status === 'fulfilled' ? results[0].value : null;
-                let onliveRes = await Promise.allSettled([fetchSafe(onliveAPI)]);
-                let liveData = onliveRes[0].status === 'fulfilled' ? onliveRes[0].value : null; 
-                if (!fullData) {
+            let results = await Promise.allSettled([fetchSafe(fullAPI)]);
+            let fullData = results[0].status === 'fulfilled' ? results[0].value : null;
+            if (!fullData) {
+                try {
                     let results = await Promise.allSettled([fetchSafe(mainAPI)]);
                     let mainData = results[0].status === 'fulfilled' ? results[0].value : null;
                     let onliveRes = await Promise.allSettled([fetchSafe(onliveAPI)]);
@@ -485,45 +485,52 @@
 
                     if (liveData && liveData.rooms) mainData.live_rooms = liveData.rooms.map(r => Number(r.room_id));
                     mainData.date = new Date().toISOString();
-                    if (!mainData) {
-                        const offlineData = await getFallbackFromDB();
-                        if (offlineData) updateData(offlineData);
-                    }
 
-                    if (mainData) window.update(window.ref(window.db, 'latest_competition'), mainData);    
-                    const dbData = await getFallbackFromDB();
+		            const dbData = await getFallbackFromDB();
                     if (mainData && dbData) {
                         mainData.summary = dbData.summary;
                         mainData.rankings = dbData.rankings;
                     }
                     updateData(mainData);
-                } 
+		    
+                    if (mainData) {
+			            window.update(window.ref(window.db, 'latest_competition'), mainData);
+		            } else {
+                        const offlineData = await getFallbackFromDB();
+                        if (offlineData && !mainData) updateData(offlineData);
+                    }
+                } catch (e) {
+                    let results = await Promise.allSettled([fetchSafe(mainAPI)]);
+                    let mainData = results[0].status === 'fulfilled' ? results[0].value : null;
+                    let onliveRes = await Promise.allSettled([fetchSafe(onliveAPI)]);
+                    let liveData = onliveRes[0].status === 'fulfilled' ? onliveRes[0].value : null;
+
+                    if (liveData && liveData.rooms) mainData.live_rooms = liveData.rooms.map(r => Number(r.room_id));
+                    mainData.date = new Date().toISOString();
+
+		            const dbData = await getFallbackFromDB();
+                    if (mainData && dbData) {
+                        mainData.summary = dbData.summary;
+                        mainData.rankings = dbData.rankings;
+                    }
+                    updateData(mainData);
+		    
+                    if (mainData) {
+			            window.update(window.ref(window.db, 'latest_competition'), mainData);
+		            } else {
+                        const offlineData = await getFallbackFromDB();
+                        if (offlineData && !mainData) updateData(offlineData);
+                    }
+                } finally {
+                    if (icon) setTimeout(() => icon.classList.remove('animate-spin'), 500);
+                }
+            } else {
+		        let onliveRes = await Promise.allSettled([fetchSafe(onliveAPI)]);
+                let liveData = onliveRes[0].status === 'fulfilled' ? onliveRes[0].value : null;
                 if (liveData && liveData.rooms) fullData.live_rooms = liveData.rooms.map(r => Number(r.room_id));
                 if (fullData) window.update(window.ref(window.db, 'latest_competition'), fullData);
-                updateData(fullData);
-            } catch (e) {
-                let results = await Promise.allSettled([fetchSafe(mainAPI)]);
-                let mainData = results[0].status === 'fulfilled' ? results[0].value : null;
-                let onliveRes = await Promise.allSettled([fetchSafe(onliveAPI)]);
-                let liveData = onliveRes[0].status === 'fulfilled' ? onliveRes[0].value : null;
-
-                if (liveData && liveData.rooms) mainData.live_rooms = liveData.rooms.map(r => Number(r.room_id));
-                mainData.date = new Date().toISOString();
-                if (!mainData) {
-                    const offlineData = await getFallbackFromDB();
-                    if (offlineData) updateData(offlineData);
-                }
-
-                if (mainData) window.update(window.ref(window.db, 'latest_competition'), mainData);    
-                const dbData = await getFallbackFromDB();
-                if (mainData && dbData) {
-                    mainData.summary = dbData.summary;
-                    mainData.rankings = dbData.rankings;
-                }
-                updateData(mainData);
-            } finally {
-                if (icon) setTimeout(() => icon.classList.remove('animate-spin'), 500);
-            }
+                updateData(fullData); 
+		    }
         };
         document.addEventListener('DOMContentLoaded', () => { load(); setInterval(load, 60 * 1000) })
     </script>
@@ -587,7 +594,6 @@
 </body>
 
 </html>
-
 
 
 
