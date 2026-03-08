@@ -485,22 +485,21 @@
 
                     if (liveData && liveData.rooms) mainData.live_rooms = liveData.rooms.map(r => Number(r.room_id));
                     mainData.date = new Date().toISOString();
-                    if (window.update && window.db) window.update(window.ref(window.db, 'latest_competition'), mainData);
-                    
+                    if (!mainData) {
+                        const offlineData = await getFallbackFromDB();
+                        if (offlineData) updateData(offlineData);
+                    }
+
+                    if (mainData) window.update(window.ref(window.db, 'latest_competition'), mainData);    
                     const dbData = await getFallbackFromDB();
                     if (mainData && dbData) {
                         mainData.summary = dbData.summary;
                         mainData.rankings = dbData.rankings;
                     }
                     updateData(mainData);
-
-                    if (!mainData) {
-                        const offlineData = await getFallbackFromDB();
-                        if (offlineData) updateData(offlineData);
-                    }
                 } 
                 if (liveData && liveData.rooms) fullData.live_rooms = liveData.rooms.map(r => Number(r.room_id));
-                if (window.update && window.db) window.update(window.ref(window.db, 'latest_competition'), mainData);
+                if (fullData) window.update(window.ref(window.db, 'latest_competition'), fullData);
                 updateData(fullData);
             } catch (e) {
                 let results = await Promise.allSettled([fetchSafe(mainAPI)]);
@@ -510,19 +509,18 @@
 
                 if (liveData && liveData.rooms) mainData.live_rooms = liveData.rooms.map(r => Number(r.room_id));
                 mainData.date = new Date().toISOString();
-                if (window.update && window.db) window.update(window.ref(window.db, 'latest_competition'), mainData);
-                    
+                if (!mainData) {
+                    const offlineData = await getFallbackFromDB();
+                    if (offlineData) updateData(offlineData);
+                }
+
+                if (mainData) window.update(window.ref(window.db, 'latest_competition'), mainData);    
                 const dbData = await getFallbackFromDB();
                 if (mainData && dbData) {
                     mainData.summary = dbData.summary;
                     mainData.rankings = dbData.rankings;
                 }
                 updateData(mainData);
-
-                if (!mainData) {
-                    const offlineData = await getFallbackFromDB();
-                    if (offlineData) updateData(offlineData);
-                }
             } finally {
                 if (icon) setTimeout(() => icon.classList.remove('animate-spin'), 500);
             }
@@ -589,6 +587,7 @@
 </body>
 
 </html>
+
 
 
 
