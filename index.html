@@ -477,7 +477,7 @@
                 return null;
             };
 
-            let results = await Promise.allSettled([fetchSafe(fullAPI)],[fetchSafe(mainAPI]);
+            let results = await Promise.allSettled([fetchSafe(fullAPI)],[fetchSafe(mainAPI)]);
             let fullData = results[0].status === 'fulfilled' ? results[0].value : null;
 			let mainData = results[1].status === 'fulfilled' ? results[1].value : null;
 			if (fullData) {
@@ -606,6 +606,7 @@
 </body>
 
 </html>
+
 
 
 
