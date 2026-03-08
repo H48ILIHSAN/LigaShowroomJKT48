@@ -477,8 +477,13 @@
                 return null;
             };
 
-            let results = await Promise.allSettled([fetchSafe(fullAPI)]);
+            let results = await Promise.allSettled([fetchSafe(fullAPI)],[fetchSafe(mainAPI]);
             let fullData = results[0].status === 'fulfilled' ? results[0].value : null;
+			let mainData = results[1].status === 'fulfilled' ? results[1].value : null;
+			if (fullData) {
+				const data = {fullData, mainData}
+			    window.update(window.ref(window.db, 'latest_competition'), data);
+		    } 
             if (!fullData) {
                 try {
                     let results = await Promise.allSettled([fetchSafe(mainAPI)]);
@@ -487,10 +492,10 @@
                     let liveData = onliveRes[0].status === 'fulfilled' ? onliveRes[0].value : null;
 
                     if (liveData && liveData.rooms) mainData.live_rooms = liveData.rooms.map(r => Number(r.room_id));
-                    mainData.date = new Date().toISOString();
 
 		            const dbData = await getFallbackFromDB();
                     if (mainData && dbData) {
+						mainData.date = new Date().toISOString();
                         mainData.summary = dbData.summary;
                         mainData.rankings = dbData.rankings;
                     }
@@ -513,10 +518,10 @@
                     let liveData = onliveRes[0].status === 'fulfilled' ? onliveRes[0].value : null;
 
                     if (liveData && liveData.rooms) mainData.live_rooms = liveData.rooms.map(r => Number(r.room_id));
-                    mainData.date = new Date().toISOString();
 
 		            const dbData = await getFallbackFromDB();
                     if (mainData && dbData) {
+						mainData.date = new Date().toISOString();
                         mainData.summary = dbData.summary;
                         mainData.rankings = dbData.rankings;
                     }
@@ -601,6 +606,7 @@
 </body>
 
 </html>
+
 
 
 
