@@ -273,7 +273,10 @@
                         <h1 class="text-3xl md:text-4xl font-black mb-4 leading-tight">Japan TV Competition</h1>
                         <p class="text-xs mb-3 text-justify text-slate-300">Kolaborasi spesial antara JKT48 dan SHOWROOM! Ini adalah audisi spesial dengan kesempatan melakukan syuting perjalanan di Okinawa, resor tropis terkenal di Jepang, serta tampil secara langsung di televisi Jepang.</p>
                         <div class="flex flex-wrap gap-4 text-xs">
-                            <div class="md:flex items-center gap-2">
+							<div class="md:flex items-center gap-2">
+                                ID: 41907
+                            </div>
+                            <div class="md:flex items-center gap-2 font-bold">
                                 <i class="ph-bold ph-calendar"></i> ${dayjs(eventStartTime).format('D MMM, HH:mm')} - ${dayjs(eventEndTime).format('D MMM, HH:mm')}
                             </div>
                             <div class="flex items-center gap-2 text-emerald-400 font-bold">
@@ -370,7 +373,7 @@
                 <div class="card-base bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden shadow-sm hover:scale-[1.01] transition-transform duration-300 cursor-pointer" onclick="toggleAccordion(this, ${roomId})">
                     <div class="p-4 flex flex-row items-center gap-4">
                         <div class="flex items-center gap-4 flex-1">
-                            <a href="https://www.showroom-live.com/r/${entry.room.name.split('/')[0]}" class="flex flex-row gap-3 min-w-0" onclick="event.stopPropagation()">
+                            <a href="https://www.showroom-live.com/r/JKT48_${entry.room.name.split('/')[0]}" class="flex flex-row gap-3 min-w-0" onclick="event.stopPropagation()">
                                 <span class="font-black text-slate-400 text-lg w-8 shrink-0">#${entry.rank}</span>
                                 <div class="size-12 rounded-xl overflow-hidden border border-slate-700 shrink-0 shadow-md">
                                     <img src="${entry.room.image_square}" class="w-full h-full object-cover"/>
@@ -594,6 +597,7 @@
 </body>
 
 </html>
+
 
 
 
