@@ -36,201 +36,8 @@
         dayjs.extend(window.dayjs_plugin_relativeTime);
         dayjs.extend(window.dayjs_plugin_duration);
         dayjs.locale('id');
-
         tailwind.config = { darkMode: 'class', theme: { extend: { colors: { primary: '#2090f8' }, fontFamily: { sans: ['Plus Jakarta Sans', 'ui-sans-serif', 'system-ui', 'sans-serif'] } } } }
-    </script>
-
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
-
-        body {
-            transition: background-color .3s ease, color .3s ease
-        }
-
-        .dark body {
-            background-color: #0f172a;
-            color: #f1f5f9
-        }
-
-        .skeleton {
-            background: linear-gradient(90deg, rgba(125, 125, 125, .1) 25%, rgba(125, 125, 125, .2) 37%, rgba(125, 125, 125, .1) 63%);
-            background-size: 400% 100%;
-            animation: skeleton-loading 1.4s ease infinite
-        }
-
-        @keyframes skeleton-loading {
-            0% {
-                background-position: 100% 50%
-            }
-
-            100% {
-                background-position: 0 50%
-            }
-        }
-
-        .card-base {
-            @apply rounded-2xl border transition-all duration-300
-        }
-
-        .dark .card-base {
-            @apply bg-slate-800/50 border-slate-700 hover:border-slate-600
-        }
-
-        .accordion-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height .3s ease-out
-        }
-
-        .accordion-open .accordion-content {
-            max-height: 1000px;
-            @apply pb-4 pt-2
-        }
-
-        .accordion-open .rotate-icon {
-            transform: rotate(180deg)
-        }
-
-        .live-pulse {
-            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite
-        }
-
-        @keyframes pulse {
-
-            0%,
-            100% {
-                opacity: 1
-            }
-
-            50% {
-                opacity: .5
-            }
-        }
-
-        ins.adsbygoogle[data-ad-status="unfilled"] {
-            display: none !important;
-        }
-
-        .saweria-button {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background-color: #faae2b;
-            color: #000;
-            padding: 10px 20px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-family: sans-serif;
-            font-weight: bold;
-            transition: transform 0.2s;
-        }
-
-        .saweria-button:hover {
-            transform: scale(1.05);
-            background-color: #e59d26;
-        }
-    </style>
-</head>
-
-<body class="min-h-screen pb-12 font-sans" oncontextmenu="return false">
-    <nav class="sticky top-0 z-50 backdrop-blur-md bg-white/70 dark:bg-slate-900/70 mb-6">
-        <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-                <img class="w-10 h-10 rounded-xl mr-2"
-                    src="https://static.showroom-live.com/assets/img/logo_guidelines/icon.png?t=1667879554" alt="Logo">
-                <h1 class="text-xl font-extrabold tracking-tight w-full text-slate-900 dark:text-white">Liga Showroom
-                    Jeketi</h1>
-            </div>
-            <div class="flex items-center gap-1">
-                <button id="theme-toggle" class="p-2 transition-all">
-                    <i id="theme-toggle-icon" class="ph-bold ph-moon text-lg"></i>
-                </button>
-                <a href="/LigaShowroomJKT48/lite" class="p-2 transition-all text-primary flex items-center gap-1">
-                    <i class="ph-bold ph-lightning text-lg"></i>
-                    <span class="font-bold">Lite Mode</span>
-                </a>
-            </div>
-        </div>
-    </nav>
-    <div class="max-w-5xl mx-auto px-4 space-y-8">
-        <div id="header-container">
-            <div class="skeleton h-80 rounded-3xl w-full"></div>
-        </div>
-        <div id="top-three-container" class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4"></div>
-        <div class="space-y-4">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                <h3 class="text-xl font-bold flex items-center gap-2 text-slate-900 dark:text-white">
-                    <i class="ph-bold ph-list-numbers text-primary"></i> Klasemen
-                </h3>
-                <div id="last-update" onclick="load()"
-                    class="cursor-pointer text-xs text-slate-500 italic text-right flex items-center justify-end gap-1">
-                    <i id="refresh-icon" class="ph-bold ph-arrows-clockwise"></i>
-                    <span id="update-text"> Memuat...</span>
-                </div>
-            </div>
-            <div id="rankings-container" class="grid grid-cols-1 gap-3">
-                <div class="skeleton h-20 rounded-2xl w-full"></div>
-                <div class="skeleton h-20 rounded-2xl w-full"></div>
-                <div class="skeleton h-20 rounded-2xl w-full"></div>
-            </div>
-        </div>
-        <div
-            class="card-base bg-slate-100 dark:bg-slate-800 w-full p-6 rounded-2xl shadow-sm overflow-hidden mb-10 mt-10 border-collapse mx-auto relative">
-            <div class="md:flex items-center">
-                <div class="text-lg flex items-center mr-auto mb-3">
-                    <i class="ph-bold ph-money mr-3"></i>
-                    <h2 class="font-bold align-center">Iklan dan Dukungan</h2>
-                </div>
-                <div class="md:flex text-center gap-6 md:mb-3">
-                    <script type='text/javascript'
-                        src='https://edge-cdn.trakteer.id/js/trbtn-overlay.min.js?v=14-05-2025'></script>
-                    <div class="rounded-2xl hover:scale-[1.05] w-full bg-primary md:bg-transparent mb-3">
-                        <script type='text/javascript'
-                            class='troverlay'>(function () { var trbtnId = trbtnOverlay.init('Support Us', '#2090f8', 'https://trakteer.id/v1/h48ilihsan/tip/embed/modal', 'https://edge-cdn.trakteer.id/images/embed/trbtn-icon.png?v=14-05-2025', '45', 'inline'); trbtnOverlay.draw(trbtnId); })();</script>
-                    </div>
-                    <a href="https://saweria.co/h48ilihsan" target="_blank"
-                        class="saweria-button mb-3 w-full justify-center">
-                        <img src="https://saweria.co/favicon.ico" width="20" alt="icon">Support Us
-                    </a>
-                </div>
-            </div>
-            <a href="https://beta.publishers.adsterra.com/referral/PxaJdqU9md" rel="nofollow">
-                <img class="rounded-2xl overflow-hidden shadow-sm hover:scale-[1.02] transition-transform duration-300 w-full"
-                    alt="banner"
-                    src="https://landings-cdn.adsterratech.com/referralBanners/gif/720x90_adsterra_reff.gif" />
-            </a>
-            <script async
-                src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1580562505317506"
-                crossorigin="anonymous"></script>
-            <ins class="adsbygoogle" style="display:block" data-ad-format="fluid" data-ad-layout-key="-fb+5w+4e-db+86"
-                data-ad-client="ca-pub-1580562505317506" data-ad-slot="1702616670"></ins>
-            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-            <script async
-                src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1580562505317506"
-                crossorigin="anonymous"></script>
-            <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1580562505317506"
-                data-ad-slot="8799817572" data-ad-format="auto" data-full-width-responsive="true"></ins>
-            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
-            <div class="hidden">
-                <script async="async" data-cfasync="false"
-                    src="https://bendspecimen.com/5e5ca51a75a707eac16a34fa00ba27b7/invoke.js"></script>
-                <div id="container-5e5ca51a75a707eac16a34fa00ba27b7" class="md:gap-2"></div>
-                <script>atOptions = { 'key': '24cef143b85165562793c6e7d20afa6c', 'format': 'iframe', 'height': 90, 'width': 720, 'params': {} };</script>
-                <script src="https://bendspecimen.com/24cef143b85165562793c6e7d20afa6c/invoke.js"></script>
-                <script>atOptions = { 'key': '24cef143b85165562793c6e7d20afa6c', 'format': 'iframe', 'height': 90, 'width': 720, 'params': {} };</script>
-                <script src="https://bendspecimen.com/24cef143b85165562793c6e7d20afa6c/invoke.js"></script>
-                <script>atOptions = { 'key': '24cef143b85165562793c6e7d20afa6c', 'format': 'iframe', 'height': 90, 'width': 720, 'params': {} };</script>
-                <script src="https://bendspecimen.com/24cef143b85165562793c6e7d20afa6c/invoke.js"></script>
-                <script>atOptions = { 'key': '24cef143b85165562793c6e7d20afa6c', 'format': 'iframe', 'height': 90, 'width': 720, 'params': {} };</script>
-                <script src="https://bendspecimen.com/24cef143b85165562793c6e7d20afa6c/invoke.js"></script>
-            </div>
-            <script>(function () { const t = document.getElementById("ad-wrapper"), e = (e, n) => { document.querySelectorAll(".container-5e5ca51a75a707eac16a34fa00ba27b7__bn").forEach(t => { t.classList.add("rounded-2xl", "w-100", "overflow-hidden", "mx-2", "shadow-sm", "hover:scale-[1.02]", "border-2", "border-slate-300", "transition-transform", "duration-300") }) }, n = new MutationObserver(e); t && n.observe(t, { childList: !0, subtree: !0 }) })()</script>
-        </div>
-        <footer class="mt-12 mb-6 flex flex-col items-center gap-4 text-center">
-            <p class="text-slate-400 text-xs font-bold uppercase tracking-[0.3em] leading-loose">HIBIKUN © 2026</p>
-        </footer>
-    </div>
-    <script>
+        
         const mainAPI = "https://www.showroom-live.com/api/events/41907/ranking?room_id=510011";
         const fullAPI = atob("aHR0cHM6Ly9hcGkuY3JzdGxuei5teS5pZC9hcGkvc2hvd3Jvb21fY29tcGV0aXRpb25fZGV0YWls");
         const onliveAPI = atob("aHR0cHM6Ly93d3cuc2hvd3Jvb20tbGl2ZS5jb20vYXBpL2V2ZW50L2prdDQ4X2phcGFudHZjb21wZXRpdGlvbi9vbmxpdmVfcm9vbXM=");
@@ -570,6 +377,198 @@
 
         document.addEventListener('DOMContentLoaded', () => { load(); setInterval(load, 3600 * 1000) })
     </script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+        body {
+            transition: background-color .3s ease, color .3s ease
+        }
+
+        .dark body {
+            background-color: #0f172a;
+            color: #f1f5f9
+        }
+
+        .skeleton {
+            background: linear-gradient(90deg, rgba(125, 125, 125, .1) 25%, rgba(125, 125, 125, .2) 37%, rgba(125, 125, 125, .1) 63%);
+            background-size: 400% 100%;
+            animation: skeleton-loading 1.4s ease infinite
+        }
+
+        @keyframes skeleton-loading {
+            0% {
+                background-position: 100% 50%
+            }
+
+            100% {
+                background-position: 0 50%
+            }
+        }
+
+        .card-base {
+            @apply rounded-2xl border transition-all duration-300
+        }
+
+        .dark .card-base {
+            @apply bg-slate-800/50 border-slate-700 hover:border-slate-600
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height .3s ease-out
+        }
+
+        .accordion-open .accordion-content {
+            max-height: 1000px;
+            @apply pb-4 pt-2
+        }
+
+        .accordion-open .rotate-icon {
+            transform: rotate(180deg)
+        }
+
+        .live-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .5
+            }
+        }
+
+        ins.adsbygoogle[data-ad-status="unfilled"] {
+            display: none !important;
+        }
+
+        .saweria-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background-color: #faae2b;
+            color: #000;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-family: sans-serif;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+
+        .saweria-button:hover {
+            transform: scale(1.05);
+            background-color: #e59d26;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen pb-12 font-sans" oncontextmenu="return false">
+    <nav class="sticky top-0 z-50 backdrop-blur-md bg-white/70 dark:bg-slate-900/70 mb-6">
+        <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <img class="w-10 h-10 rounded-xl mr-2"
+                    src="https://static.showroom-live.com/assets/img/logo_guidelines/icon.png?t=1667879554" alt="Logo">
+                <h1 class="text-xl font-extrabold tracking-tight w-full text-slate-900 dark:text-white">Liga Showroom
+                    Jeketi</h1>
+            </div>
+            <div class="flex items-center gap-1">
+                <button id="theme-toggle" class="p-2 transition-all">
+                    <i id="theme-toggle-icon" class="ph-bold ph-moon text-lg"></i>
+                </button>
+                <a href="/LigaShowroomJKT48/lite" class="p-2 transition-all text-primary flex items-center gap-1">
+                    <i class="ph-bold ph-lightning text-lg"></i>
+                    <span class="font-bold">Lite Mode</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+    <div class="max-w-5xl mx-auto px-4 space-y-8">
+        <div id="header-container">
+            <div class="skeleton h-80 rounded-3xl w-full"></div>
+        </div>
+        <div id="top-three-container" class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4"></div>
+        <div class="space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <h3 class="text-xl font-bold flex items-center gap-2 text-slate-900 dark:text-white">
+                    <i class="ph-bold ph-list-numbers text-primary"></i> Klasemen
+                </h3>
+                <div id="last-update" onclick="load()"
+                    class="cursor-pointer text-xs text-slate-500 italic text-right flex items-center justify-end gap-1">
+                    <i id="refresh-icon" class="ph-bold ph-arrows-clockwise"></i>
+                    <span id="update-text"> Memuat...</span>
+                </div>
+            </div>
+            <div id="rankings-container" class="grid grid-cols-1 gap-3">
+                <div class="skeleton h-20 rounded-2xl w-full"></div>
+                <div class="skeleton h-20 rounded-2xl w-full"></div>
+                <div class="skeleton h-20 rounded-2xl w-full"></div>
+            </div>
+        </div>
+        <div
+            class="card-base bg-slate-100 dark:bg-slate-800 w-full p-6 rounded-2xl shadow-sm overflow-hidden mb-10 mt-10 border-collapse mx-auto relative">
+            <div class="md:flex items-center">
+                <div class="text-lg flex items-center mr-auto mb-3">
+                    <i class="ph-bold ph-money mr-3"></i>
+                    <h2 class="font-bold align-center">Iklan dan Dukungan</h2>
+                </div>
+                <div class="md:flex text-center gap-6 md:mb-3">
+                    <script type='text/javascript'
+                        src='https://edge-cdn.trakteer.id/js/trbtn-overlay.min.js?v=14-05-2025'></script>
+                    <div class="rounded-2xl hover:scale-[1.05] w-full bg-primary md:bg-transparent mb-3">
+                        <script type='text/javascript'
+                            class='troverlay'>(function () { var trbtnId = trbtnOverlay.init('Support Us', '#2090f8', 'https://trakteer.id/v1/h48ilihsan/tip/embed/modal', 'https://edge-cdn.trakteer.id/images/embed/trbtn-icon.png?v=14-05-2025', '45', 'inline'); trbtnOverlay.draw(trbtnId); })();</script>
+                    </div>
+                    <a href="https://saweria.co/h48ilihsan" target="_blank"
+                        class="saweria-button mb-3 w-full justify-center">
+                        <img src="https://saweria.co/favicon.ico" width="20" alt="icon">Support Us
+                    </a>
+                </div>
+            </div>
+            <a href="https://beta.publishers.adsterra.com/referral/PxaJdqU9md" rel="nofollow">
+                <img class="rounded-2xl overflow-hidden shadow-sm hover:scale-[1.02] transition-transform duration-300 w-full"
+                    alt="banner"
+                    src="https://landings-cdn.adsterratech.com/referralBanners/gif/720x90_adsterra_reff.gif" />
+            </a>
+            <script async
+                src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1580562505317506"
+                crossorigin="anonymous"></script>
+            <ins class="adsbygoogle" style="display:block" data-ad-format="fluid" data-ad-layout-key="-fb+5w+4e-db+86"
+                data-ad-client="ca-pub-1580562505317506" data-ad-slot="1702616670"></ins>
+            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+            <script async
+                src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1580562505317506"
+                crossorigin="anonymous"></script>
+            <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1580562505317506"
+                data-ad-slot="8799817572" data-ad-format="auto" data-full-width-responsive="true"></ins>
+            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+            <div class="hidden">
+                <script async="async" data-cfasync="false"
+                    src="https://bendspecimen.com/5e5ca51a75a707eac16a34fa00ba27b7/invoke.js"></script>
+                <div id="container-5e5ca51a75a707eac16a34fa00ba27b7" class="md:gap-2"></div>
+                <script>atOptions = { 'key': '24cef143b85165562793c6e7d20afa6c', 'format': 'iframe', 'height': 90, 'width': 720, 'params': {} };</script>
+                <script src="https://bendspecimen.com/24cef143b85165562793c6e7d20afa6c/invoke.js"></script>
+                <script>atOptions = { 'key': '24cef143b85165562793c6e7d20afa6c', 'format': 'iframe', 'height': 90, 'width': 720, 'params': {} };</script>
+                <script src="https://bendspecimen.com/24cef143b85165562793c6e7d20afa6c/invoke.js"></script>
+                <script>atOptions = { 'key': '24cef143b85165562793c6e7d20afa6c', 'format': 'iframe', 'height': 90, 'width': 720, 'params': {} };</script>
+                <script src="https://bendspecimen.com/24cef143b85165562793c6e7d20afa6c/invoke.js"></script>
+                <script>atOptions = { 'key': '24cef143b85165562793c6e7d20afa6c', 'format': 'iframe', 'height': 90, 'width': 720, 'params': {} };</script>
+                <script src="https://bendspecimen.com/24cef143b85165562793c6e7d20afa6c/invoke.js"></script>
+            </div>
+            <script>(function () { const t = document.getElementById("ad-wrapper"), e = (e, n) => { document.querySelectorAll(".container-5e5ca51a75a707eac16a34fa00ba27b7__bn").forEach(t => { t.classList.add("rounded-2xl", "w-100", "overflow-hidden", "mx-2", "shadow-sm", "hover:scale-[1.02]", "border-2", "border-slate-300", "transition-transform", "duration-300") }) }, n = new MutationObserver(e); t && n.observe(t, { childList: !0, subtree: !0 }) })()</script>
+        </div>
+        <footer class="mt-12 mb-6 flex flex-col items-center gap-4 text-center">
+            <p class="text-slate-400 text-xs font-bold uppercase tracking-[0.3em] leading-loose">HIBIKUN © 2026</p>
+        </footer>
+    </div>
 </body>
 
 </html>
+
