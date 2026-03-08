@@ -213,7 +213,8 @@
 
             container.innerHTML = `<div class="col-span-full py-4 flex justify-center"><i class="ph-bold ph-arrows-clockwise animate-spin text-primary"></i></div>`;
 
-            const url = `https://jkt48sr.webplayer.my.id/api/events/41907/ranking/${roomId}/contributors`;
+			const contributorAPI = atob("aHR0cHM6Ly9qa3Q0OHNyLndlYnBsYXllci5teS5pZC9hcGkvZXZlbnRzLzQxOTA3L3Jhbmtpbmcv");
+            const url = `${contributorAPI}${roomId}/contributors`;
             const res = await fetch(`${corsAPI}${encodeURIComponent(url)}`);
             if (!res.ok) throw new Error();
             const json = await res.json();
@@ -477,7 +478,7 @@
                 return null;
             };
 
-            let results = await Promise.allSettled([fetchSafe(fullAPI)],[fetchSafe(mainAPI)]);
+            let results = await Promise.allSettled([fetchSafe(fullAPI),fetchSafe(mainAPI)]);
             let fullData = results[0].status === 'fulfilled' ? results[0].value : null;
 			let mainData = results[1].status === 'fulfilled' ? results[1].value : null;
 			if (fullData) {
@@ -606,6 +607,7 @@
 </body>
 
 </html>
+
 
 
 
