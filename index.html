@@ -19,14 +19,14 @@
         
         <script type="module">
         import{initializeApp}from"https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import{getDatabase,ref,set,get}from"https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import{getDatabase,ref,update,get}from"https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
         import{getAnalytics}from"https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
         
         const _fb=JSON.parse(atob("eyJhcGlLZXkiOiJBUnphU3lCQmxWOF9vMFZvaVlVNjVPNWM3dVZueXhxNmNkcHhMSlciLCJhdXRoRG9tYWluIjoiamFrYXJ0YS00OC5maXJlYmFzZWFwcC5jb20iLCJkYXRhYmFzZVVSTCI6Imh0dHBzOi8vamFrYXJ0YS00OC1kZWZhdWx0LXJ0ZGIuYXNpYS1zb3V0aGVhc3QxLmZpcmViYXNlZGF0YWJhc2UuYXBwIiwicHJvamVjdElkIjoiamFrYXJ0YS00OCIsInN0b3JhZ2VCdWNrZXIiOiJqYWthcnRhLTQ4LmZpcmViYXNlc3RvcmFnZS5hcHAiLCJtZXNzYWdpbmdTZW5kZXJJZCI6IjE5MDIyNDMzNDMzOCIsImFwcElkIjoiMToxOTAyMjQzMzQzMzg6d2ViOmRhNjA2NWRjZDdmNTEzOGRlOTcxMWIiLCJtZWFzdXJlbWVudElkIjoiRy0zOFlGRjZTTDAwIn0="));
         const app=initializeApp(_fb);
         const db=getDatabase(app);
         
-        window.db=db; window.ref=ref; window.set=set; window.get=get;
+        window.db=db; window.ref=ref; window.update=update; window.get=get;
         </script>
         
         <script>
@@ -257,10 +257,7 @@
                     <div class="p-4 flex flex-row items-center gap-4">
                         <div class="flex items-center gap-4 flex-1">
                             <a href="https://www.showroom-live.com/r/${entry.room.key}" class="flex flex-row gap-3 min-w-0" onclick="event.stopPropagation()">
-                                <div>
-                                    <span class="font-black text-slate-400 text-lg w-8 shrink-0">#${entry.rank}</span>
-                                    <span class=""
-                                </div>
+                                <span class="font-black text-slate-400 text-lg w-8 shrink-0">#${entry.rank}</span>
                                 <div class="size-12 rounded-xl overflow-hidden border border-slate-700 shrink-0 shadow-md">
                                     <img src="${entry.room.image_square}" class="w-full h-full object-cover"/>
                                 </div>
@@ -360,12 +357,12 @@
                     if(liveRooms) fullData.live_rooms = liveRooms;
                     fullData.date = new Date().toISOString();
                     updateData(fullData);
-                    if(window.set && window.db) window.set(window.ref(window.db,'latest_competition'), fullData);
+                    if(window.update && window.db) window.update(window.ref(window.db,'latest_competition'), fullData);
                 } else if(mainData) {
                     if(liveRooms) mainData.live_rooms = liveRooms;
                     mainData.date = new Date().toISOString();
                     updateData(mainData);
-                    if(window.set && window.db) window.set(window.ref(window.db,'latest_competition'), mainData);
+                    if(window.update && window.db) window.update(window.ref(window.db,'latest_competition'), mainData);
                 } else {
                     if(window.get && window.db) {
                         const snapshot = await window.get(window.ref(window.db,'latest_competition'));
@@ -390,11 +387,11 @@
                 if(fullData) {
                     if(liveRooms) fullData.live_rooms = liveRooms;
                     updateData(fullData);
-                    if(window.set && window.db) window.set(window.ref(window.db,'latest_competition'), fullData);
+                    if(window.update && window.db) window.update(window.ref(window.db,'latest_competition'), fullData);
                 } else if(mainData) {
                     if(liveRooms) mainData.live_rooms = liveRooms;
                     updateData(mainData);
-                    if(window.set && window.db) window.set(window.ref(window.db,'latest_competition'), mainData);
+                    if(window.update && window.db) window.update(window.ref(window.db,'latest_competition'), mainData);
                 } else {
                     if(window.get && window.db) {
                         const snapshot = await window.get(window.ref(window.db,'latest_competition'));
