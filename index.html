@@ -473,46 +473,58 @@
             };
 
             try {
-                let results = await Promise.allSettled([fetchSafe(fullAPI), fetchSafe(onliveAPI)]);
-                let mainData = results[0].status === 'fulfilled' ? results[0].value : null;
-                let liveData = results[1].status === 'fulfilled' ? results[1].value : null;
+                let results = await Promise.allSettled([fetchSafe(fullAPI)]);
+                let fullData = results[0].status === 'fulfilled' ? results[0].value : null;
 
-                if (!mainData) {
-                    results = await Promise.allSettled([fetchSafe(mainAPI), fetchSafe(onliveAPI)]);
+                let onliveRes = await Promise.allSettled([fetchSafe(onliveAPI)]);
+                let liveData = onliveRes[0].status === 'fulfilled' ? onliveRes[0].value : null;
+                
+                if (liveData && liveData.rooms) {
+                    fullData.live_rooms = liveData.rooms.map(r => Number(r.room_id));
+                }
+                
+                if (window.update && window.db) {
+                    window.update(window.ref(window.db, 'latest_competition'), mainData);
+                }
+                
+                updateData(fullData);
+                
+                if (!fullData) {
+                    results = await Promise.allSettled([fetchSafe(mainAPI)]);
                     mainData = results[0].status === 'fulfilled' ? results[0].value : null;
-                    liveData = results[1].status === 'fulfilled' ? results[1].value : null;
 
+                    onliveRes = await Promise.allSettled([fetchSafe(onliveAPI)]);
+                    liveData = onliveRes[0].status === 'fulfilled' ? onliveRes[0].value : null;
+
+                    if (liveData && liveData.rooms) {
+                        fullData.live_rooms = liveData.rooms.map(r => Number(r.room_id));
+                    }
+                
+                    if (window.update && window.db) {
+                        window.update(window.ref(window.db, 'latest_competition'), mainData);
+                    }
+
+                    mainData.date = new Date().toISOString();
                     const dbData = await getFallbackFromDB();
                     if (mainData && dbData) {
                         mainData.summary = dbData.summary;
                         mainData.rankings = dbData.rankings;
                     }
-                }
-
-                if (mainData) {
-                    if (liveData && liveData.rooms) {
-                        mainData.live_rooms = liveData.rooms.map(r => Number(r.room_id));
-                    }
-                    mainData.date = new Date().toISOString();
 
                     updateData(mainData);
 
-                    if (window.update && window.db) {
-                        window.update(window.ref(window.db, 'latest_competition'), mainData);
+                    if (!mainData) {
+                        const offlineData = await getFallbackFromDB();
+                        if (offlineData) updateData(offlineData);
                     }
-                } else {
-                    const offlineData = await getFallbackFromDB();
-                    if (offlineData) updateData(offlineData);
-                }
-
+                } 
             } catch (e) {
                 console.error("Error loading data:", e);
             } finally {
                 if (icon) setTimeout(() => icon.classList.remove('animate-spin'), 500);
             }
         };
-
-        document.addEventListener('DOMContentLoaded', () => { load(); setInterval(load, 3600 * 1000) })
+        document.addEventListener('DOMContentLoaded', () => { load(); setInterval(load, 60 * 1000) })
     </script>
         
         <div
@@ -574,5 +586,6 @@
 </body>
 
 </html>
+
 
 
